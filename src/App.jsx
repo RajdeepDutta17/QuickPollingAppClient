@@ -3,10 +3,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 function App() {
-  const url = "https://quickpollingappapi.onrender.com/";
+  const url = "https://quickpollingappapi.onrender.com";
   const [polls, setPolls] = useState([]);
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
+  const [isLoading, setIsLoading] = useState("true");
 
   useEffect(() => {
     const fetchPolls = async () => {
@@ -16,6 +17,8 @@ function App() {
       } catch (err) {
         console.log(err);
         toast.error(err.response.data.message);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchPolls();
@@ -106,7 +109,10 @@ function App() {
           ))}
         </div>
       ))}
-      {!polls.length && <p className="no-poll">Create a New Pole</p>}
+      {!polls.length && !isLoading && (
+        <p className="no-poll">Create a New Pole</p>
+      )}
+      {!polls.length && isLoading && <p className="no-poll">Loading Data...</p>}
     </div>
   );
 }
