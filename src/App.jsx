@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 function App() {
+  const url = "https://quickpollingappapi.onrender.com/";
   const [polls, setPolls] = useState([]);
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
@@ -10,10 +11,8 @@ function App() {
   useEffect(() => {
     const fetchPolls = async () => {
       try {
-        const res = await axios.get(
-          "https://quickpollingappapi.onrender.com/polls"
-        );
-        setPolls(res.data);
+        const res = await axios.get(`${url}/polls`);
+        setPolls(res.data.reverse());
       } catch (err) {
         console.log(err);
         toast.error(err.response.data.message);
@@ -27,7 +26,7 @@ function App() {
       if (!question || !options.length) {
         return toast.warn("Fields cannot be empty");
       }
-      await axios.post("https://quickpollingappapi.onrender.com/polls", {
+      await axios.post(`${url}/polls`, {
         question,
         options,
       });
@@ -41,12 +40,9 @@ function App() {
 
   const vote = async (pollId, optionIndex) => {
     try {
-      await axios.post(
-        `https://quickpollingappapi.onrender.com/polls/${pollId}/vote`,
-        {
-          optionIndex,
-        }
-      );
+      await axios.post(`${url}/polls/${pollId}/vote`, {
+        optionIndex,
+      });
     } catch (err) {
       console.log(err);
       toast.error(err.response.data.message);
